@@ -47,7 +47,6 @@ public class Student extends User implements Serializable{
     public void addExam1(ExecutedExam executedExam) {
         if(this.myExams==null){this.myExams = new ArrayList<>();}
         this.myExams.add(executedExam);
-        executedExam.setStudent(this);
     }
 
     public List<ExecutedExam> getMyExams()

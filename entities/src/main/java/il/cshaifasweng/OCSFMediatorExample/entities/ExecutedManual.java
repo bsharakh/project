@@ -11,10 +11,10 @@ public class ExecutedManual extends ExecutedExam implements Serializable {
     String solutionFile;
 
 
-    public ExecutedManual(int serialNum, Student student,String examDate , String startime ,double grade, boolean submitInTime ,Exam exam,String solutionFile, ExecutedExamInfo examInfo) {
-        super(serialNum, student,examDate,startime,grade,submitInTime,exam,examInfo);
-        this.solutionFile = solutionFile;
-    }
+//    public ExecutedManual(int serialNum, Student student,String examDate , String startime ,double grade, boolean submitInTime ,Exam exam,String solutionFile, ExecutedExamInfo examInfo) {
+//        super(serialNum, student,examDate,startime,grade,submitInTime,exam,examInfo);
+//        this.solutionFile = solutionFile;
+//    }
 
     public ExecutedManual() {
     }

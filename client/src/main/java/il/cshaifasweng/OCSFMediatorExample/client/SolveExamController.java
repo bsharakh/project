@@ -52,6 +52,8 @@ public class SolveExamController
     private int clks_counter, extraTime;
     private LocalTime startTime;
 
+    private boolean timeUpFlag;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////// Initialize ///////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ public class SolveExamController
         exam_name_text.setText(exam.getTitle());
         date_text.setText(App.getDate());
 
-
+        timeUpFlag = true;
         extraTime = 0;
         extra_time_text.setText("");
         startTime = LocalTime.now();
@@ -81,8 +83,6 @@ public class SolveExamController
 
         currentQuestionNumber = 0;
         loadNewQuestion(currentQuestionNumber);
-
-        vexam = new ExecutedVirtual(exam, (Student)App.getUser(), startTime.toString());
     }
 
     private void initClock(int duration)
@@ -102,9 +102,15 @@ public class SolveExamController
             if(extraTime > 0) {extra_time_text.setText("Extra Time: " + extraTime + "min");}
 
             LocalTime defaultTime = LocalTime.parse("00:00:00");
-            if(diff<=0){
-                exam_name_text.setText("FINISHED");
+            if(diff<=0 && timeUpFlag){
+                timeUpFlag = false;
+                exam_name_text.setText("Time Is Up !");
                 clock_text.setText(defaultTime.format(dtf));
+                try {
+                    timeIsUp();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }else{
                 LocalTime remaining = defaultTime.plusSeconds(diff);
                 clock_text.setText(remaining.format(dtf));
@@ -134,6 +140,12 @@ public class SolveExamController
         for (int i=0; i< clks.length; i++){
             clks[i].setVisible(false);
         }
+    }
+
+    private String getStartTime ()
+    {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return  startTime.format(dtf);
     }
 
     private void loadNextClk()
@@ -240,6 +252,24 @@ public class SolveExamController
         }
     }
 
+    private Object [] endExam (boolean inTime)
+    {
+        vexam = new ExecutedVirtual((Student)App.getUser(), date_text.getText(), getStartTime(), inTime, examAnswers);
+        Object [] objects = {exam.getCodeExam(), vexam};
+        return objects;
+    }
+
+    private void timeIsUp () throws IOException {
+//        try {
+//            SimpleClient.getClient().sendToServer(new Message("#newExecutedVirtualExam", endExam(false)));
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+        EventBus.getDefault().unregister(this);
+        App.setRoot("studentMain");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////// Server Replay //////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,11 +305,14 @@ public class SolveExamController
     }
 
     public void finish_exam_click(ActionEvent actionEvent) throws IOException {
-        // TODO: Implement
-        client.closeConnection();
+//        try {
+//            SimpleClient.getClient().sendToServer(new Message("#newExecutedVirtualExam", endExam(true)));
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
         EventBus.getDefault().unregister(this);
-        App.setRoot("studentM ain");
-
+        App.setRoot("studentMain");
     }
 
     public void prev_button_click(ActionEvent actionEvent)

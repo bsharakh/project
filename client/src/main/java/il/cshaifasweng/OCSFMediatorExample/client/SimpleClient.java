@@ -258,6 +258,15 @@ public class SimpleClient extends AbstractClient {
 			EventGetTeacherAllExams newEvent= new EventGetTeacherAllExams(writtenExamsInfoList,executedExamInfoList);
 			Platform.runLater(()->{EventBus.getDefault().post(newEvent);});
 		}
+		else if (messageSt.equals("#returunGrade"))
+		{
+			Object [] data = (Object[]) message.getObject1();
+			ArrayList<ExecutedExamInfo> writtenExamsInfoList = (ArrayList<ExecutedExamInfo>) data[0];
+			ArrayList<ExecutedExamInfo> executedExamInfoList = (ArrayList<ExecutedExamInfo>) data[1];
+
+			EventGetTeacherAllExams newEvent= new EventGetTeacherAllExams(writtenExamsInfoList,executedExamInfoList);
+			Platform.runLater(()->{EventBus.getDefault().post(newEvent);});
+		}
 
 	}
 	

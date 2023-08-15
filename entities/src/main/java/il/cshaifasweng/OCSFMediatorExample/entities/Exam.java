@@ -42,6 +42,9 @@ public class Exam implements Serializable
         this.descForStudent = descForStudent;
         this.descForTeacher = descForTeacher;
         setTeacher(teacher);
+        this.executedExams = new ArrayList<>();
+        this.coursesList = new ArrayList<>();
+        this.examQuestion = new ArrayList<>();
     }
 
     public Exam(int codeExam, String title, int time, String descForStudent, String descForTeacher, Teacher teacher, Course course)
@@ -57,6 +60,9 @@ public class Exam implements Serializable
         this.coursesList.add(course);
         course.getExamsList().add(this);
 
+        this.executedExams = new ArrayList<>();
+        this.examQuestion = new ArrayList<>();
+
         this.teacher = teacher;
         teacher.getExams().add(this);
     }
@@ -70,8 +76,26 @@ public class Exam implements Serializable
         this.descForStudent = descForStudent;
         this.descForTeacher = descForTeacher;
 
+        this.executedExams = new ArrayList<>();
+        this.coursesList = new ArrayList<>();
+        this.examQuestion = new ArrayList<>();
+
         this.teacher = teacher;
         teacher.getExams().add(this);
+    }
+
+    public Exam(int codeExam, String title, int time, String descForStudent, String descForTeacher)
+    {
+        super();
+        this.title = title;
+        this.codeExam = codeExam;
+        this.time = time;
+        this.descForStudent = descForStudent;
+        this.descForTeacher = descForTeacher;
+
+        this.executedExams = new ArrayList<>();
+        this.coursesList = new ArrayList<>();
+        this.examQuestion = new ArrayList<>();
     }
 
     public Exam(Exam exam)
@@ -87,9 +111,8 @@ public class Exam implements Serializable
         for (ExamQuestion eq : exam.getExamQuestion()){
             this.examQuestion.add(new ExamQuestion(eq));
         }
-//        this.coursesList = new ArrayList<>();
-//
-//        this.teacher = exam.getTeacher();
+        this.executedExams = new ArrayList<>();
+        this.coursesList = new ArrayList<>();
     }
 
     private int generateExamCode (int code, Course course)
@@ -172,7 +195,8 @@ public class Exam implements Serializable
         e.setExam(this);
     }
 
-    public void addCourse (Course c){
+    public void addCourse (Course c)
+    {
         if(this.coursesList == null){
             this.coursesList = new ArrayList<>();
         }
@@ -180,6 +204,14 @@ public class Exam implements Serializable
         c.getExamsList().add(this);
 
         this.codeExam = generateExamCode(this.codeExam, c);
+    }
+
+    public void addExecutedExam (ExecutedExam e)
+    {
+        if(this.executedExams == null){
+            this.executedExams = new ArrayList<>();
+        }
+        this.executedExams.add(e);
     }
 
     public List<ExecutedExam> getExecutedExams() {

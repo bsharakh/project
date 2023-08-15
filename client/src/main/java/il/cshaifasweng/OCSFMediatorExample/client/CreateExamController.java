@@ -312,14 +312,14 @@ public class CreateExamController
         }else {
             error_bar_text.setText("Creating Exam ...");
 
-//            Exam exam = new Exam(Integer.valueOf(code), title, Integer.valueOf(time), studentDesc, teacherDesc, (Teacher) App.getUser());
-//            Object [] objects = {exam, courseName};
-//            try {
-//                SimpleClient.getClient().sendToServer(new Message("#CreateNewExam", objects));
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+            Exam exam = new Exam(Integer.valueOf(code), title, Integer.valueOf(time), studentDesc, teacherDesc);
+            Object [] objects = {exam, courseName, App.getUser().getUserName()};
+            try {
+                SimpleClient.getClient().sendToServer(new Message("#CreateNewExam", objects));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 //            client.closeConnection();
             EventBus.getDefault().unregister(this);
             inThisPage = false;

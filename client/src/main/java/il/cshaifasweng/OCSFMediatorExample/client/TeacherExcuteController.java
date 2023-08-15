@@ -67,7 +67,7 @@ public class TeacherExcuteController {
     }
 
     @FXML
-    void executeBtn(ActionEvent event) {
+    void executeBtn(ActionEvent event) throws IOException {
 
         error_bar_text.setText("");
 
@@ -102,6 +102,7 @@ public class TeacherExcuteController {
             {
                 e.printStackTrace();
             }
+            App.setRoot("teacherMain");
 
         }
         else

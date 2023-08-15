@@ -315,13 +315,12 @@ public class SimpleServer extends AbstractServer {
 			ExamQuestion eq4 = new ExamQuestion(q20, 30, "from DS and OOP", "You learned this in many courses");
 			ExamQuestion eq5 = new ExamQuestion(q15, 25, "", "");
 
-			Exam exam1 = new Exam(55, "Intro Exam", 30, "", "", newTeacherX, C_language);
+			Exam exam1 = new Exam(55, "Intro Exam", 1, "", "", newTeacher2, C_language);
 			exam1.addExamQuestion(eq1);
 			exam1.addExamQuestion(eq2);
 			exam1.addExamQuestion(eq3);
 			exam1.addExamQuestion(eq4);
 			exam1.addExamQuestion(eq5);
-
 
 			session.save(eq1);
 			session.save(eq2);
@@ -331,7 +330,50 @@ public class SimpleServer extends AbstractServer {
 			session.save(exam1);
 			session.flush();
 
-			ExecutedExam ex1 = new ExecutedExam(1,newStudent1,"15/8/2023","10:00",90,true,exam1);
+
+			String[] Calculus1_1 = {"Derivative", "Integral", "Limit", "Function"};
+            Question q26 = new Question(622, "What is the mathematical concept that represents the rate of change of a function?", Calculus1_1, 1, calculus);
+
+            String[] Calculus1_2 = {"x^2 + C", "2x + C", "x + C", "x^2 / 2 + C"};
+            Question q27 = new Question(722, "What is the indefinite integral of 2x with respect to x?", Calculus1_2, 2, calculus);
+
+            String[] Calculus1_3 = {"lim(x -> 0) (sin(x) / x)", "lim(x -> ∞) (1 / x)", "lim(x -> 1) (e^x - 1 / x - 1)", "lim(x -> π/2) (cos(x) / sin(x))"};
+            Question q28 = new Question(822, "Which limit represents the fundamental constant e?", Calculus1_3, 1, calculus);
+
+            String[] Calculus1_4 = {"Area under the curve", "Derivative", "Tangent line", "Concavity"};
+            Question q29 = new Question(922, "The definite integral of a function represents what geometric concept?", Calculus1_4, 1, calculus);
+
+            String[] Calculus1_5 = {"x^3 / 3 + C", "3x^2 + C", "x^2 + C", "3x + C"};
+            Question q30 = new Question(122, "What is the indefinite integral of 3x^2 with respect to x?", Calculus1_5, 1, calculus);
+
+
+			ExamQuestion x1 = new ExamQuestion(q26, 10, "", "");
+			ExamQuestion x2 = new ExamQuestion(q27, 15, "", "");
+			ExamQuestion x3 = new ExamQuestion(q28, 20, "", "");
+			ExamQuestion x4 = new ExamQuestion(q29, 30, "", "Think Hard!");
+			ExamQuestion x5 = new ExamQuestion(q30, 25, "", "");
+
+			Exam exam2 = new Exam(66, "Calculus 1 Final Exam", 5, "", "", newTeacher2, calculus);
+			exam2.addExamQuestion(x1);
+			exam2.addExamQuestion(x2);
+			exam2.addExamQuestion(x3);
+			exam2.addExamQuestion(x4);
+			exam2.addExamQuestion(x5);
+
+			session.save(q26);
+			session.save(q27);
+			session.save(q28);
+			session.save(q29);
+			session.save(q30);
+			session.save(x1);
+			session.save(x2);
+			session.save(x3);
+			session.save(x4);
+			session.save(x5);
+			session.save(exam2);
+			session.flush();
+
+			ExecutedExam ex1 = new ExecutedExam(newStudent1,"15/8/2023","10:00",90,true,exam1);
 			session.save(ex1);
 			session.flush();
 
@@ -526,9 +568,27 @@ public class SimpleServer extends AbstractServer {
 		} else if (msgString.equals("#GetGrade")) {
 			try {
 				session.beginTransaction();
-				Question newQues = (Question) message.getObject1();
-				session.save(newQues);
-				session.flush();
+				Object [] data = (Object[])  message.getObject1();
+				String uname = (String) data[0];
+				int code = Integer.valueOf ((String) data[1]);
+				String grade = "80";
+
+				List<ExecutedExam> list = getAllObjects(ExecutedExam.class);
+				for (ExecutedExam e : list){
+					if(e.getStudent().getUserName().equals(uname) && e.getExam().getCodeExam()==code){
+						if(e.isMarked())
+							grade = Double.toString(e.getGrade());
+						else
+							grade = "Not Available";
+						break;
+					}
+				}
+
+				try {
+					client.sendToClient(new Message("#returunGrade", grade));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				session.getTransaction().commit();
 
 			} catch (Exception e1) {
@@ -769,6 +829,7 @@ public class SimpleServer extends AbstractServer {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+			session.getTransaction().commit();
 		}
 
 		else if(msgString.equals("#GetTeacherAllExams"))
@@ -1024,6 +1085,8 @@ public class SimpleServer extends AbstractServer {
 			System.out.println("p3");
 			String courseName = (String) data[1];
 			System.out.println("p4");
+			String teacherName = (String) data[2];
+			System.out.println("p4");
 
 			ArrayList<Course> allCoursesList = new ArrayList<>(getAllObjects(Course.class));
 			Course selectedCourse = null;
@@ -1036,7 +1099,7 @@ public class SimpleServer extends AbstractServer {
 
 			System.out.println("p5" + selectedCourse.getCourseName());
 			if(selectedCourse != null){
-				Teacher teacher = session.find(Teacher.class, exam.getTeacher().getUserName());
+				Teacher teacher = session.find(Teacher.class, teacherName);
 				System.out.println("p6" + teacher.getUserName());
 				exam.addCourse(selectedCourse);
 				exam.setTeacher(teacher);
@@ -1056,11 +1119,76 @@ public class SimpleServer extends AbstractServer {
 				session.flush();
 			}
 			System.out.println("px");
+			try
+			{
+				Warning warning = new Warning("Exam Saved");
+				client.sendToClient(new Message("#loginWarning", warning));
+			}
+			catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			session.getTransaction().commit();
+		}
+		else if (msgString.equals("#newExecutedVirtualExam")) ///
+		{
+			System.out.println("w1");
+			session.beginTransaction();
+			System.out.println("w2");
+			Object [] data = (Object []) message.getObject1();
+			int examCode = (int) data[0];
+			ExecutedVirtual vexam = (ExecutedVirtual) data[1];
+			System.out.println("w3");
+			String sname = vexam.getStudent().getUserName();
+			System.out.println("w4");
+			Student s = session.find(Student.class, sname);
+			System.out.println("w5");
+			if(s != null) {
+				System.out.println("w6");
+				vexam.setStudent(s);
+				System.out.println("w7");
+
+				Exam base = session.find(Exam.class, examCode);
+//				vexam.setExam(base);
+				System.out.println("w8");
+				double grade = culcGrade(base, new ArrayList<>(vexam.getSolutions()));
+				System.out.println(grade);
+				vexam.setGrade(grade);
+				System.out.println("w9");
+				session.save(vexam);
+				session.flush();
+				System.out.println("w100");
+				session.merge(s);
+				session.merge(base);
+				session.flush();
+				System.out.println("w11");
+			}
+			try
+			{
+				Warning warning = new Warning("Time Is Up! The Exam Has Been Closed Automatically");
+				client.sendToClient(new Message("#loginWarning", warning));
+			}
+			catch (Exception e1) {
+				e1.printStackTrace();
+			}
 			session.getTransaction().commit();
 		}
 
-
 	} /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	public double culcGrade(Exam exam, ArrayList<Integer> answers)
+	{
+		double grade = 0;
+		List<ExamQuestion> tmpList = exam.getExamQuestion();
+		for (int i=0;i< answers.size();i++)
+		{
+			if (tmpList.get(i).getQuestion().getCorrect_answer() == answers.get(i)-1)
+			{
+				grade+=tmpList.get(i).getPoints();
+			}
+		}
+		return grade;
+	}
 
 	private int findCourseIndex (ArrayList<Course> list, String courseName)
 	{
