@@ -860,7 +860,7 @@ public class SimpleServer extends AbstractServer {
 
 		}
 
-		////////////////////////////////////////////////////////////////23////////////////////
+		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////// Michel //////////////////////////////////////
@@ -1013,6 +1013,52 @@ public class SimpleServer extends AbstractServer {
 
 			session.getTransaction().commit();
 		}
+		else if (msgString.equals("#CreateNewExam")) ///
+		{
+			System.out.println("p1");
+			session.beginTransaction();
+			Object [] data = (Object []) message.getObject1();
+			System.out.println("p2");
+
+			Exam exam = (Exam) data[0];
+			System.out.println("p3");
+			String courseName = (String) data[1];
+			System.out.println("p4");
+
+			ArrayList<Course> allCoursesList = new ArrayList<>(getAllObjects(Course.class));
+			Course selectedCourse = null;
+			for(Course c : allCoursesList){
+				if(c.getCourseName().equals(courseName)){
+					selectedCourse = c;
+					break;
+				}
+			}
+
+			System.out.println("p5" + selectedCourse.getCourseName());
+			if(selectedCourse != null){
+				Teacher teacher = session.find(Teacher.class, exam.getTeacher().getUserName());
+				System.out.println("p6" + teacher.getUserName());
+				exam.addCourse(selectedCourse);
+				exam.setTeacher(teacher);
+				System.out.println("pq1");
+				session.save(exam);
+				System.out.println("pq2");
+				session.flush();
+
+				System.out.println("pq3");
+				session.merge(selectedCourse);
+				System.out.println("p7");
+				session.flush();
+
+				System.out.println("pq8");
+				session.merge(teacher);
+				System.out.println("p9");
+				session.flush();
+			}
+			System.out.println("px");
+			session.getTransaction().commit();
+		}
+
 
 	} /////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -329,7 +329,7 @@ public class CreateQuestionController
 //    }
 
     public void Home_Click(ActionEvent actionEvent) throws IOException {
-        client.closeConnection();
+//        client.closeConnection();
         EventBus.getDefault().unregister(this);
         App.setRoot("teacherMain");
     }

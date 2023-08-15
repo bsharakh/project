@@ -235,7 +235,7 @@ public class ExamsDrawerController
                         btn.setOnAction((ActionEvent event) -> {
                             try {
                                 Exam edit_exam = getTableView().getItems().get(getIndex());
-                                client.closeConnection();
+//                                client.closeConnection();
                                 EventBus.getDefault().unregister(this);
                                 App.setRoot("create_exam");
                             } catch (IOException e) {
@@ -276,7 +276,7 @@ public class ExamsDrawerController
                             setExecutedExamCode(exe_exam.getCodeExam());
                             try {
 //                                client.closeConnection();
-//                                EventBus.getDefault().unregister(this);
+                                EventBus.getDefault().unregister(this);
                                 App.setRoot("execute_exam");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -377,7 +377,7 @@ public class ExamsDrawerController
     }
 
     public void Home_Click(ActionEvent actionEvent) throws IOException {
-        client.closeConnection();
+//        client.closeConnection();
         EventBus.getDefault().unregister(this);
         App.setRoot("teacherMain");
     }

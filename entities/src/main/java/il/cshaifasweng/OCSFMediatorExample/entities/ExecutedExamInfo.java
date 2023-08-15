@@ -64,7 +64,7 @@ public class ExecutedExamInfo implements Serializable {
         this.average = exam.getAverage();
         this.median = exam.getMedian();
         this.type = exam.getType();
-        this.hist = new int[10];
+        this.hist = exam.getHist();
     }
 
     public  ExecutedExamInfo(int code,String password,ExamType type)

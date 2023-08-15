@@ -35,14 +35,13 @@
          <children>
             <TableView fx:id="Table" prefHeight="298.0" prefWidth="475.0">
               <columns>
-                  <TableColumn fx:id="Code_Column" prefWidth="55.33331298828125" text="Code" />
-                <TableColumn fx:id="Question_Column" prefWidth="273.0" text="Question" />
-                  <TableColumn fx:id="Points_Column" minWidth="0.0" prefWidth="65.6666259765625" text="Points" />
+                <TableColumn fx:id="Question_Column" prefWidth="330.0" text="Question" />
+                  <TableColumn fx:id="Points_Column" minWidth="0.0" prefWidth="57.0" text="Points" />
               </columns>
             </TableView>
          </children></VBox>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="400.0" layoutX="545.0" layoutY="181.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #abdbe3;" width="415.0" />
-      <Text fx:id="question_text" layoutX="565.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 21;" text="Question" wrappingWidth="375.0000079162419" />
+      <Text fx:id="question_text" layoutX="565.0" layoutY="284.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 21;" text="Question" wrappingWidth="375.0000079162419" />
       <ComboBox fx:id="SelectQuestionComboBox" layoutX="565.0" layoutY="222.0" onAction="#QuestionSelected" prefHeight="30.0" prefWidth="375.0" promptText="Select a Question" style="-fx-background-color: #ffffff;" visibleRowCount="6" />
       <Text fx:id="exam_name_text1111" fill="#066372" layoutX="565.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="Add a Question" wrappingWidth="375.0000079162419" />
       <Button layoutX="749.0" layoutY="529.0" mnemonicParsing="false" onAction="#Add_Question_Click" prefHeight="24.0" prefWidth="192.0" style="-fx-background-color: #063970;" text="Add" textFill="WHITE">
